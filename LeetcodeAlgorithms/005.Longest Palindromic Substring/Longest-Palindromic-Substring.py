@@ -12,17 +12,50 @@ class Solution:
         :type s: str
         :rtype: str
         """
-        a = "123"
-        re_s = a[::-1]
+        # TODO simplify code
+        record = 0
+        r_str = ''
+        for index in range(len(s)):
+            single_left, single_right = self.singleNode(s, index)
+            single_length = single_right - single_left
+            if single_length >= record:
+                record = single_length
+                r_str = s[single_left:single_right + 1]
+            double_left, double_right = self.doubleNode(s, index)
+            double_length = double_right - double_left
+            if double_length >= record:
+                record = double_length
+                r_str = s[double_left:double_right + 1]
+        return r_str
 
-    def _LCS(self, str1, str2):
-        list_a = list(str1)
-        list_b = list(str2)
-        list_ab = [[0 for i in range(len(list_a) + 1)] for j in range(len(list_b) + 1)]
-        for i, count_a in enumerate(list_a):
-            for j, count_b in enumerate(list_b):
-                # todo i==0,j==0
-                if i == j:
-                    list_ab[i][j] = list_ab[i - 1][j - 1] + 1
+    def singleNode(self, s, index):
+        if index < 0 or index >= len(s):
+            return 0, 0
+        if index == 0 or index == len(s) - 1:
+            return index, index
+        left = index
+        right = index
+        while s[left] == s[right]:
+            left -= 1
+            right += 1
+            if left < 0 or right >= len(s):
+                break
+        return left + 1, right - 1
 
-        pass
+    def doubleNode(self, s, index):
+        if index < 0 or index >= len(s) - 1 or s[index] != s[index + 1]:
+            return 0, 0
+        left = index
+        right = index + 1
+        while s[left] == s[right]:
+            left -= 1
+            right += 1
+            if left < 0 or right >= len(s):
+                break
+        return left + 1, right - 1
+
+
+if __name__ == '__main__':
+    solution = Solution()
+    s = "babad"
+    print(solution.longestPalindrome(s))
